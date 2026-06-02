@@ -1,0 +1,108 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "5512e97a-fa7d-435a-8c88-1d017a74f326",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77265868-2fd5-48f7-9839-fa406a06046e",
+      "name": "Webhook",
+      "webhookId": "5512e97a-fa7d-435a-8c88-1d017a74f326"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ \n  $json.test_scenario === 'success' ? 'https://httpbin.org/status/200' : \n  ($json.test_scenario === 'hard_error' ? 'https://httpbin.org/status/500' : \n  (($execution.retryCount >= 2) ? 'https://httpbin.org/status/200' : 'https://httpbin.org/status/503'))\n}}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "client_name",
+              "value": "={{ $json.body.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        -16
+      ],
+      "id": "565cfe83-fd39-410c-819d-7f54e54abffd",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        192
+      ],
+      "id": "26a1f522-7641-43b6-9558-93eb7ee8383b",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { status: \"Авария зафиксирована!\", message: \"Данные сохранены в локальный лог\" } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        192
+      ],
+      "id": "bf996ded-8912-4416-a6be-0d01bb2e1bdd",
+      "name": "Code in JavaScript",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "55270141-724f-4768-9908-b6ac527a57c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "db3be5ba9243f367c013522e4d927049b09cb40bd141bf6787877ed0601758cc"
+  },
+  "id": "hctzWQvZcsy2KjAM",
+  "tags": []
+}
