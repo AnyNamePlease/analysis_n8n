@@ -1,6 +1,6 @@
 #!/bin/bash
 # Тест-кейс 3: Фатальный сбой
-WEBHOOK_URL="http://localhost:8080/webhook/ТВОЙ_ID_ВЕБХУКА/lead-catch"
+WEBHOOK_URL="http://localhost:8080/webhook/5512e97a-fa7d-435a-8c88-1d017a74f326/lead-catch"
 
 echo "[RUN] Тест-кейс 3: Фатальный сбой (Hard Failure)"
 curl -i -X POST -H "Content-Type: application/json" \
