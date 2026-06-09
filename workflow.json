@@ -1,0 +1,119 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "5512e97a-fa7d-435a-8c88-1d017a74f326",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "d381d2d1-1c54-47c6-ab25-bbf68f4cd4fc",
+      "name": "Webhook",
+      "webhookId": "5512e97a-fa7d-435a-8c88-1d017a74f326"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ \n  $json.body.test_scenario === 'success' ? 'https://httpbin.org/status/200' : \n  ($json.body.test_scenario === 'retry_success' ? 'https://httpbin.org/status/' + ($execution.retryCount >= 1 ? '200' : '500') : \n  'https://httpbin.org/status/503')\n}}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "client_name",
+              "value": "={{ $json.body.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        176,
+        16
+      ],
+      "id": "cd86bbde-85e5-44fb-9c17-8b9fa78a0a72",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        368
+      ],
+      "id": "05a815f2-a104-4ad1-8bc0-20e2c292130a",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { status: \"Авария зафиксирована!\", message: \"Данные сохранены в локальный лог\" } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        368
+      ],
+      "id": "e11c64d6-ed74-4638-a3aa-43b71fed05a2",
+      "name": "Code in JavaScript",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "cvseeY3MmAAy2e3f",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "7380781f-b24c-47c4-bb34-026e39b4d4a1",
+  "meta": {
+    "instanceId": "db3be5ba9243f367c013522e4d927049b09cb40bd141bf6787877ed0601758cc"
+  },
+  "nodeGroups": [],
+  "id": "cvseeY3MmAAy2e3f",
+  "tags": []
+}
